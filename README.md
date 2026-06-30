@@ -30,6 +30,20 @@ python3 -m ai_radio.codex_worker --data-dir ./data --loop
 http://localhost:8000
 ```
 
+## 画面の使い方（これだけ）
+
+1. `Queue` に番組が出るまで待つ。
+2. `Start` を押す。
+3. あとは放置する。番組が自動で繰り返し流れる。
+
+画面の見方:
+
+- `pending jobs`: 作成待ちの番組数。`0` でも問題ありません。
+- `last error`: `none` なら正常です。
+- `Queue`: 再生する番組の一覧です。
+
+`番組生成待ちです` と表示される間は、まだ番組を作っています。しばらく待ってください。音が出ないときは、もう一度 `Start` を押してください。
+
 ## 主な環境変数
 
 - `AI_RADIO_DB_PATH`: SQLite DB path。既定値 `/data/ai_radio.sqlite3`
