@@ -1,5 +1,5 @@
 data/
-searxng/
+/searxng/
 __pycache__/
 .pytest_cache/
 .venv/

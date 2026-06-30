@@ -11,14 +11,21 @@ services:
     volumes:
       - ./data:/data
     depends_on:
-      - searxng
-      - voicevox
+      searxng:
+        condition: service_healthy
+      voicevox:
+        condition: service_healthy
 
   voicevox:
     image: voicevox/voicevox_engine:cpu-latest
     ports:
       - "50021:50021"
-    command: ["--host", "0.0.0.0"]
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "--show-error", "http://localhost:50021/version"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+      start_period: 5s
 
   searxng:
     image: searxng/searxng:latest
@@ -26,3 +33,11 @@ services:
       - "8080:8080"
     environment:
       SEARXNG_BASE_URL: http://localhost:8080/
+    volumes:
+      - ./config/searxng/settings.yml:/etc/searxng/settings.yml:ro
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://localhost:8080/"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+      start_period: 5s

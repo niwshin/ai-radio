@@ -65,8 +65,8 @@ class Researcher:
     async def _search(self, client: httpx.AsyncClient, query: str) -> list[dict]:
         resp = await client.get(
             f"{self.searxng_url}/search",
-            params={"q": query, "format": "json", "language": "ja-JP,en-US"},
-            headers={"User-Agent": "ai-radio-mvp/0.1"},
+            params={"q": query, "format": "json", "language": "all"},
+            headers={"User-Agent": "ai-radio-mvp/0.1", "X-Real-IP": "127.0.0.1"},
         )
         resp.raise_for_status()
         payload = resp.json()
