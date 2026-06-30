@@ -1,0 +1,28 @@
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      AI_RADIO_DB_PATH: /data/ai_radio.sqlite3
+      AI_RADIO_DATA_DIR: /data
+      AI_RADIO_SEARXNG_URL: http://searxng:8080
+      AI_RADIO_VOICEVOX_URL: http://voicevox:50021
+    volumes:
+      - ./data:/data
+    depends_on:
+      - searxng
+      - voicevox
+
+  voicevox:
+    image: voicevox/voicevox_engine:cpu-latest
+    ports:
+      - "50021:50021"
+    command: ["--host", "0.0.0.0"]
+
+  searxng:
+    image: searxng/searxng:latest
+    ports:
+      - "8080:8080"
+    environment:
+      SEARXNG_BASE_URL: http://localhost:8080/
