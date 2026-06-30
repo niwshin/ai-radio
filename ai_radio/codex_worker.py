@@ -53,6 +53,9 @@ OUTPUT_SCHEMA = {
 
 
 def run_once(data_dir: Path, codex_bin: str = "codex", timeout_seconds: int = 1800) -> bool:
+    # Codex runs with the jobs directory as its cwd, so every path passed to it
+    # must remain valid after that directory change.
+    data_dir = data_dir.resolve()
     dirs = ensure_job_dirs(data_dir)
     pending = sorted(dirs["pending"].glob("*.json"))
     if not pending:
