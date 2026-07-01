@@ -7,7 +7,7 @@
 - `app`: FastAPIアプリ。Web検索ジョブ作成、SQLite保存、VOICEVOX合成、ローカルWeb UIを担当。
 - `searxng`: Web話題収集用のメタ検索。
 - `voicevox`: ローカルTTS。
-- `codex_worker`: ホスト側で `codex exec` を呼び、ChatGPTログイン済みCodex枠で原稿JSONを生成。
+- `codex_worker`: ホスト側で `codex exec` を呼び、ChatGPTログイン済みCodex枠で原稿JSONを生成。使用モデルは `AI_RADIO_CODEX_MODEL` で指定します。
 
 DockerコンテナにCodex認証情報を入れないため、Codex実行だけホスト側workerで行います。
 
@@ -21,7 +21,7 @@ docker compose up --build
 
 ```bash
 python3 -m pip install -e .
-python3 -m ai_radio.codex_worker --data-dir ./data --loop
+AI_RADIO_CODEX_MODEL=o3 python3 -m ai_radio.codex_worker --data-dir ./data --loop
 ```
 
 ブラウザで開きます。
@@ -54,6 +54,7 @@ http://localhost:8000
 - `AI_RADIO_SEARXNG_URL`: SearXNG URL。既定値 `http://searxng:8080`
 - `AI_RADIO_VOICEVOX_URL`: VOICEVOX URL。既定値 `http://voicevox:50021`
 - `AI_RADIO_VOICEVOX_SPEAKER`: VOICEVOX speaker ID。既定値 `2`
+- `AI_RADIO_CODEX_MODEL`: Codex CLIで使うLLMモデル名。既定値 `o3`
 - `AI_RADIO_RETENTION_DAYS`: 音声/ログ保持日数。既定値 `7`
 
 ホスト側workerにも `requirements.txt` のPython依存関係が必要です。

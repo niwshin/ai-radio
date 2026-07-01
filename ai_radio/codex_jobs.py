@@ -22,12 +22,13 @@ def ensure_job_dirs(data_dir: Path) -> dict[str, Path]:
     return dirs
 
 
-def make_packet(theme: str, target_minutes: int, candidates: list[ResearchItem]) -> CodexJobPacket:
+def make_packet(theme: str, target_minutes: int, model: str, candidates: list[ResearchItem]) -> CodexJobPacket:
     return CodexJobPacket(
         job_id=str(uuid.uuid4()),
         created_at=utc_now_iso(),
         theme=theme,
         target_minutes=target_minutes,
+        model=model,
         candidates=candidates,
     )
 

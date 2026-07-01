@@ -109,6 +109,12 @@ codex login status
 python -m ai_radio.codex_worker --data-dir ./data --loop
 ```
 
+モデルを明示したい場合は、`AI_RADIO_CODEX_MODEL` を指定します。
+
+```bash
+AI_RADIO_CODEX_MODEL=o3 python -m ai_radio.codex_worker --data-dir ./data --loop
+```
+
 workerは、アプリが `data/codex_jobs/pending` に作成したジョブをCodex CLIへ渡します。このターミナルを閉じると新しい原稿は生成されません。
 
 ## 4. 動作を確認する

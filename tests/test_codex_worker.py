@@ -13,6 +13,7 @@ def test_run_once_uses_absolute_output_paths(monkeypatch, tmp_path):
     packet = make_packet(
         "test",
         1,
+        "o3",
         [
             ResearchItem(
                 title="Example",
@@ -26,6 +27,7 @@ def test_run_once_uses_absolute_output_paths(monkeypatch, tmp_path):
     def fake_run(command, **kwargs):
         schema_path = Path(command[command.index("--output-schema") + 1])
         output_path = Path(command[command.index("--output-last-message") + 1])
+        assert command[command.index("--model") + 1] == "o3"
         assert schema_path.is_absolute()
         assert schema_path.exists()
         assert output_path.is_absolute()

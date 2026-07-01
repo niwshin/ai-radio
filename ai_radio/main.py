@@ -37,7 +37,7 @@ def status() -> PlaybackStatus:
     queue = service.latest_queue()
     return PlaybackStatus(
         queue=queue,
-        now_playing=queue[0] if queue else None,
+        now_playing=None,
         pending_jobs=service.db.pending_job_count(),
         last_error=scheduler.last_error,
     )

@@ -32,7 +32,7 @@ class RadioService:
         if not items:
             return None
         self.db.save_sources([item.model_dump() for item in items])
-        packet = make_packet(self.settings.theme, self.settings.program_target_minutes, items)
+        packet = make_packet(self.settings.theme, self.settings.program_target_minutes, self.settings.codex_model, items)
         write_pending_job(self.settings.data_dir, packet)
         self.db.create_codex_job(packet.job_id, packet.model_dump())
         return packet.job_id
@@ -45,10 +45,12 @@ class RadioService:
             try:
                 output = ScriptOutput.model_validate_json(result_path.read_text(encoding="utf-8"))
                 job_packet_path = dirs["completed"] / f"{job_id}.json"
+                llm_model = None
                 if job_packet_path.exists():
                     packet_payload = json.loads(job_packet_path.read_text(encoding="utf-8"))
+                    llm_model = packet_payload.get("model")
                     self.validate_sources(output, {item["url"] for item in packet_payload.get("candidates", [])})
-                program_id = self.db.save_program(output, None, "synthesizing")
+                program_id = self.db.save_program(output, None, "synthesizing", llm_model=llm_model)
                 try:
                     audio_path = await self.tts.synthesize_program(program_id, output.voicevox_text)
                     self.db.set_program_audio(program_id, audio_path, "ready")
@@ -94,6 +96,8 @@ class RadioService:
             id=row["id"],
             generated_at=row["generated_at"],
             topic_title=row["topic_title"],
+            llm_model=row["llm_model"],
+            script_excerpt=row["script"][:180].replace("\n", " ").strip() if row["script"] else None,
             tags=json.loads(row["tags_json"]),
             topic_era=row["topic_era"],
             sources=sources_payload.get("sources", []),

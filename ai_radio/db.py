@@ -69,6 +69,16 @@ class Database:
                 CREATE INDEX IF NOT EXISTS idx_jobs_status ON codex_jobs(status);
                 """
             )
+            self._ensure_column(conn, "programs", "llm_model", "TEXT")
+
+    @staticmethod
+    def _ensure_column(conn: sqlite3.Connection, table: str, column: str, column_type: str) -> None:
+        existing = {
+            row["name"]
+            for row in conn.execute(f"PRAGMA table_info({table})").fetchall()
+        }
+        if column not in existing:
+            conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {column_type}")
 
     def save_sources(self, items: list[dict[str, Any]]) -> None:
         with self.connect() as conn:
@@ -139,19 +149,27 @@ class Database:
                 ).fetchall()
             )
 
-    def save_program(self, output: ScriptOutput, audio_path: Path | None, status: str, error: str | None = None) -> str:
+    def save_program(
+        self,
+        output: ScriptOutput,
+        audio_path: Path | None,
+        status: str,
+        llm_model: str | None = None,
+        error: str | None = None,
+    ) -> str:
         program_id = str(uuid.uuid4())
         with self.connect() as conn:
             conn.execute(
                 """
                 INSERT INTO programs
-                (id, generated_at, topic_title, tags_json, topic_era, script, sources_json, audio_path, status, error)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                (id, generated_at, topic_title, llm_model, tags_json, topic_era, script, sources_json, audio_path, status, error)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     program_id,
                     utc_now_iso(),
                     output.topic_title,
+                    llm_model,
                     json.dumps(output.tags, ensure_ascii=False),
                     output.topic_era,
                     output.script,

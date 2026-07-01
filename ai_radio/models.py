@@ -42,6 +42,7 @@ class CodexJobPacket(BaseModel):
     created_at: str
     theme: str
     target_minutes: int
+    model: str
     candidates: list[ResearchItem]
 
 
@@ -49,6 +50,8 @@ class ProgramSummary(BaseModel):
     id: str
     generated_at: str
     topic_title: str
+    llm_model: str | None = None
+    script_excerpt: str | None = None
     tags: list[str]
     topic_era: str
     sources: list[SourceRef]

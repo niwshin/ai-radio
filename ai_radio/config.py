@@ -19,6 +19,7 @@ class Settings:
     searxng_url: str = os.getenv("AI_RADIO_SEARXNG_URL", "http://searxng:8080")
     voicevox_url: str = os.getenv("AI_RADIO_VOICEVOX_URL", "http://voicevox:50021")
     voicevox_speaker: int = _int_env("AI_RADIO_VOICEVOX_SPEAKER", 2)
+    codex_model: str = os.getenv("AI_RADIO_CODEX_MODEL", "o3")
     generation_interval_seconds: int = _int_env("AI_RADIO_GENERATION_INTERVAL_SECONDS", 3600)
     program_target_minutes: int = _int_env("AI_RADIO_PROGRAM_TARGET_MINUTES", 30)
     theme: str = os.getenv("AI_RADIO_THEME", "tech gadgets trending")

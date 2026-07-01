@@ -81,6 +81,8 @@ def run_once(data_dir: Path, codex_bin: str = "codex", timeout_seconds: int = 18
                 "--ephemeral",
                 "--ignore-user-config",
                 "--skip-git-repo-check",
+                "--model",
+                packet.model,
                 "--output-schema",
                 str(schema_path),
                 "--output-last-message",
